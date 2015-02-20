@@ -1,117 +1,25 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent"  tools:context=".MainActivity">
+<com.findbuddy.findbuddy.FragmentNavigationDrawer
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:context=".MapsActivity"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/btZoomIn" />
+    <FrameLayout
+        android:id="@+id/flContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="+"
-        android:id="@+id/btZoomIn"
-        android:layout_above="@+id/btZoomOut"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="0dp"
-        android:onClick="onZoomInClick" />
+    <!-- The navigation drawer -->
+    <ListView android:id="@+id/lvDrawer"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="0dp"
+        android:background="@android:color/background_light"
+        />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="-"
-        android:id="@+id/btZoomOut"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="0dp"
-
-        android:height="5dp"
-        android:padding="0dp"
-        android:onClick="onZoomOutClick" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/etLat2"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:hint="Latitude" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/etLon2"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/etLat2"
-        android:layout_toEndOf="@+id/etLat2"
-        android:hint="Longitude" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Set"
-        android:id="@+id/btSetCoord1"
-        android:width="20dp"
-        android:padding="0dp"
-        android:paddingBottom="0dp"
-        android:paddingTop="0dp"
-        android:layout_above="@+id/btSetCoord2"
-        android:layout_toLeftOf="@+id/btZoomIn"
-        android:layout_toRightOf="@+id/etLon1"
-        android:layout_toEndOf="@+id/etLon1"
-        android:onClick="onCoord1SetClick" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/etLat1"
-        android:hint="Latitude"
-        android:layout_above="@+id/etLat2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/etLon1"
-        android:hint="Longitude"
-        android:layout_above="@+id/etLon2"
-        android:layout_toRightOf="@+id/etLat2"
-        android:layout_toEndOf="@+id/etLat2" />
+</com.findbuddy.findbuddy.FragmentNavigationDrawer>
 
 
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Set"
-        android:layout_marginTop="-3dp"
-        android:layout_marginBottom="-3dp"
-        android:id="@+id/btSetCoord2"
-        android:width="20dp"
-        android:layout_below="@+id/btZoomIn"
-        android:layout_toRightOf="@+id/etLon2"
-        android:padding="0dp"
-        android:paddingBottom="0dp"
-        android:paddingTop="0dp"
-        android:layout_toStartOf="@+id/btZoomIn"
-        android:layout_toLeftOf="@+id/btZoomIn"
-        android:onClick="onCoord2SetClick" />
-</RelativeLayout>
