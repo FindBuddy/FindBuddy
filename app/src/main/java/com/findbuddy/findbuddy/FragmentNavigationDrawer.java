@@ -164,13 +164,15 @@ public class FragmentNavigationDrawer extends DrawerLayout {
             public void onDrawerClosed(View view) {
                 // setTitle(getCurrentTitle());
                 // call onPrepareOptionsMenu()
-                getActivity().supportInvalidateOptionsMenu();
+                //getActivity().supportInvalidateOptionsMenu();
+                super.onDrawerClosed(view);
             }
 
             public void onDrawerOpened(View drawerView) {
                 // setTitle("Navigate");
                 // call onPrepareOptionsMenu()
-                getActivity().supportInvalidateOptionsMenu();
+                //getActivity().supportInvalidateOptionsMenu();
+                super.onDrawerOpened(drawerView);
             }
         };
     }

@@ -38,7 +38,7 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
-        //setUpMapIfNeeded();
+        setUpMapIfNeeded();
 
         return v;
     }
