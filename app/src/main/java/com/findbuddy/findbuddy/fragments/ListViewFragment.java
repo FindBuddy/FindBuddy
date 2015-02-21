@@ -1,4 +1,4 @@
-package com.findbuddy.findbuddy;
+package com.findbuddy.findbuddy.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.findbuddy.findbuddy.R;
 
 /**
  * Created by abhidhar on 2/19/15.

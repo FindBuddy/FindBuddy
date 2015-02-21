@@ -3,7 +3,7 @@
 ** using compatibility fragments and support actionbar
 */
 
-package com.findbuddy.findbuddy;
+package com.findbuddy.findbuddy.activity;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -21,6 +21,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.findbuddy.findbuddy.R;
+import com.findbuddy.findbuddy.fragments.ListViewFragment;
+import com.findbuddy.findbuddy.fragments.MapViewFragment;
 
 import java.util.ArrayList;
 

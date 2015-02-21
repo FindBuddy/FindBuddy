@@ -1,4 +1,4 @@
-package com.findbuddy.findbuddy;
+package com.findbuddy.findbuddy.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -8,8 +8,13 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.findbuddy.findbuddy.R;
+import com.findbuddy.findbuddy.fragments.ListViewFragment;
+import com.findbuddy.findbuddy.fragments.MapViewFragment;
+import com.findbuddy.findbuddy.fragments.OnFragmentInteractionListener;
 
-public class MainActivity extends ActionBarActivity implements  OnFragmentInteractionListener{
+
+public class MainActivity extends ActionBarActivity implements OnFragmentInteractionListener {
 
 
     private FragmentNavigationDrawer dlDrawer;

@@ -1,4 +1,4 @@
-<com.findbuddy.findbuddy.FragmentNavigationDrawer
+<com.findbuddy.findbuddy.activity.FragmentNavigationDrawer
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
@@ -20,6 +20,6 @@
         android:background="@android:color/background_light"
         />
 
-</com.findbuddy.findbuddy.FragmentNavigationDrawer>
+</com.findbuddy.findbuddy.activity.FragmentNavigationDrawer>
 
 

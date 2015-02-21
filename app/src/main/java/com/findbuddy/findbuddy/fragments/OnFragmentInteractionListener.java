@@ -1,4 +1,4 @@
-package com.findbuddy.findbuddy;
+package com.findbuddy.findbuddy.fragments;
 
 /**
  * Created by abhidhar on 2/19/15.
