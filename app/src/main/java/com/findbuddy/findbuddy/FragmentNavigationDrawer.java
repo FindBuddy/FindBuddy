@@ -11,6 +11,7 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -29,6 +30,8 @@ public class FragmentNavigationDrawer extends DrawerLayout {
     private ArrayAdapter<String> drawerAdapter;
     private ArrayList<FragmentNavItem> drawerNavItems;
     private int drawerContainerRes;
+
+    Fragment oldFragment = null;
 
     public FragmentNavigationDrawer(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -72,30 +75,47 @@ public class FragmentNavigationDrawer extends DrawerLayout {
         drawerNavItems.add(new FragmentNavItem(windowTitle, fragmentClass));
     }
 
-    /** Swaps fragments in the main content view */
-    public void selectDrawerItem(int position) {
+    /**
+     * Swaps fragments in the main content view
+     */
+    public void selectDrawerItem(int position, boolean init) {
         // Create a new fragment and specify the planet to show based on
         // position
         try {
-        FragmentNavItem navItem = drawerNavItems.get(position);
-        Fragment fragment = null;
+            FragmentNavItem navItem = drawerNavItems.get(position);
+            Fragment newFragment = null;
 
-            fragment = navItem.getFragmentClass().newInstance();
-            //fragment = MapViewFragment.newInstance();
-            Bundle args = navItem.getFragmentArgs();
-            if (args != null) {
-                fragment.setArguments(args);
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            FragmentTransaction ft = fragmentManager.beginTransaction();
+
+            if (navItem.getFragmentClass() == MapViewFragment.class) {
+                newFragment = MapViewFragment.newInstance();
+            } else if (navItem.getFragmentClass() == ListViewFragment.class) {
+                newFragment = ListViewFragment.newInstance();
             }
 
+            if(init) {
+                ft.replace(drawerContainerRes, newFragment).commit();
+            } else {
+                // hide old and show new
+                if(oldFragment != null) {
+                    ft.hide(oldFragment);
+                }
+                ft.show(newFragment);
+                ft.commit();
+            }
 
-        // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(drawerContainerRes, fragment).commit();
+            oldFragment = newFragment;
 
-        // Highlight the selected item, update the title, and close the drawer
-        lvDrawer.setItemChecked(position, true);
-        setTitle(navItem.getTitle());
-        closeDrawer(lvDrawer);
+            Bundle args = navItem.getFragmentArgs();
+            if (args != null) {
+                newFragment.setArguments(args);
+            }
+
+            // Highlight the selected item, update the title, and close the drawer
+            lvDrawer.setItemChecked(position, true);
+            setTitle(navItem.getTitle());
+            closeDrawer(lvDrawer);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -122,7 +142,7 @@ public class FragmentNavigationDrawer extends DrawerLayout {
     private class FragmentDrawerItemListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectDrawerItem(position);
+            selectDrawerItem(position, false);
         }
     }
 

@@ -29,7 +29,7 @@ public class MainActivity extends ActionBarActivity implements  OnFragmentIntera
         dlDrawer.addNavItem("Friends List", "Friends List", ListViewFragment.class);
         // Select default
         if (savedInstanceState == null) {
-            dlDrawer.selectDrawerItem(0);
+            dlDrawer.selectDrawerItem(0, true);
         }
 
 

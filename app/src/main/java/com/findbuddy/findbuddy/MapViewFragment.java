@@ -34,8 +34,9 @@ import java.util.HashMap;
  */
 public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragment {
 
+    private static MapViewFragment mapViewFragment;
     private GoogleMap mMap;
-    private HashMap<String ,User> markerUsers = null;
+    private HashMap<String ,User> markerUsers = new HashMap<>();;
     private ArrayList<User> users = null;
 
     public  MapViewFragment() {
@@ -43,7 +44,9 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
     }
 
     public static MapViewFragment newInstance() {
-        MapViewFragment mapViewFragment = new MapViewFragment();
+        if(mapViewFragment == null) {
+            mapViewFragment = new MapViewFragment();
+        }
         return  mapViewFragment;
     }
 
@@ -52,7 +55,7 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setUpMapIfNeeded();
-        markerUsers = new HashMap<>();
+        //markerUsers = new HashMap<>();
     }
 
     @Override
@@ -61,6 +64,12 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
         setUpMapIfNeeded();
 
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setUpMapIfNeeded();
     }
 
     @Override
@@ -85,15 +94,11 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
      * method in {@link #onResume()} to guarantee that it will be called.
      */
     private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
-
             mMap = getMap();
-            // Check if we were successful in obtaining the map.
-            if (mMap != null) {
-                setUpMap();
-            }
+        }
+        if (mMap != null) {
+            setUpMap();
         }
     }
 
