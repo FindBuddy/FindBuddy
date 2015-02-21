@@ -15,13 +15,13 @@ public class User extends ParseObject {
     private String name;
     private double lat;
     private double lon;
-    private int accuracy;
+    private float accuracy;
     private String updateTime;
 
 
     public User() {}
 
-    public User(String userId, String name, double lat, double lon, int accuracy) {
+    public User(String userId, String name, double lat, double lon, float accuracy) {
         this.userId = userId;
         this.name = name;
         this.lat = lat;
@@ -72,7 +72,7 @@ public class User extends ParseObject {
         return getInt("accuracy");
     }
 
-    public void setAccuracy(int accuracy) {
+    public void setAccuracy(float accuracy) {
         put("accuracy", accuracy);
     }
 

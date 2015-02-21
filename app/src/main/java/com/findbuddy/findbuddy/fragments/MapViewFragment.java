@@ -1,5 +1,6 @@
 package com.findbuddy.findbuddy.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.location.Criteria;
@@ -25,13 +26,14 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * Created by abhidhar on 2/19/15.
  */
 public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragment {
+
+    private OnFragmentInteractionListener listener;
 
     private static MapViewFragment mapViewFragment;
     private GoogleMap mMap;
@@ -167,6 +169,11 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
             LatLngBounds bounds= new LatLngBounds( new LatLng(minLat,minLon),new LatLng(maxLat,maxLon));
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
             //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 5));
+
+            // get my location
+            Location myLocation = mMap.getMyLocation();
+            // call the listener to send my location up to the activity
+            listener.sendCurrentLocationToParse(myLocation);
         }
     }
     private void setUpCustomInfoWidget()
@@ -229,5 +236,16 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
     }
 
     public void onCoord2SetClick(View view) {
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof OnFragmentInteractionListener) {
+            listener = (OnFragmentInteractionListener) activity;
+        } else {
+            throw new ClassCastException(activity.toString()
+                    + " must implement MyListFragment.OnItemSelectedListener");
+        }
     }
 }

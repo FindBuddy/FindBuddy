@@ -1,6 +1,7 @@
 package com.findbuddy.findbuddy.activity;
 
 import android.content.res.Configuration;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -67,7 +68,7 @@ public class MainActivity extends ActionBarActivity implements OnFragmentInterac
         }
 
 
-        sendCurrentUserInfo();
+        receiveUsersList();
         //handler.postDelayed(runnable, 1000);
 
     }
@@ -99,7 +100,7 @@ public class MainActivity extends ActionBarActivity implements OnFragmentInterac
         });
     }
 
-    private void sendCurrentUserInfo() {
+    private void sendCurrentUserInfo(Location myLocation) {
         ParseQuery query = ParseQuery.getQuery(User.class);
         List<User> users = null;
         User user = null;
@@ -110,22 +111,24 @@ public class MainActivity extends ActionBarActivity implements OnFragmentInterac
             e.printStackTrace();
         }
 
-        double lat = 37.3379;
-        double lon = -121.888;
-        int accuracy = 5;
+        double lat = myLocation.getLatitude();
+        double lon = myLocation.getLongitude();
+        float accuracy = myLocation.getAccuracy();
 
         if(users == null || users.isEmpty()) {
             user = new User(sUserId, sUserId, lat, lon, accuracy);
         } else {
             user = users.get(0);
-            user.setAccuracy(user.getAccuracy()+1);
+            user.setAccuracy(accuracy);
+            user.setLon(lon);
+            user.setLat(lat);
         }
 
         user.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 Toast.makeText(MainActivity.this, "Successfully created user on Parse", Toast.LENGTH_SHORT).show();
-                receiveUsersList();
+                //receiveUsersList();
             }
         });
     }
@@ -133,7 +136,6 @@ public class MainActivity extends ActionBarActivity implements OnFragmentInterac
     private void receiveUsersList() {
         // Construct query to execute
         ParseQuery<User> query = ParseQuery.getQuery(User.class);
-        //query.setLimit(MAX_CHAT_MESSAGES_TO_SHOW);
         query.orderByAscending("createdAt");
         // Execute query for messages asynchronously
         query.findInBackground(new FindCallback<User>() {
@@ -142,8 +144,6 @@ public class MainActivity extends ActionBarActivity implements OnFragmentInterac
                     usersList.clear();
                     usersList.addAll(user);
                     dlDrawer.setUsers(usersList);
-                    //mAdapter.notifyDataSetChanged();
-                    //lvChat.invalidate();
                 } else {
                     Log.d("message", "Error: " + e.getMessage());
                 }
@@ -195,9 +195,10 @@ public class MainActivity extends ActionBarActivity implements OnFragmentInterac
     }
 
     @Override
-    public void onFragmentInteraction(String id) {
+    public void sendCurrentLocationToParse(Location myLocation) {
 
-        Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Sending my location to parse", Toast.LENGTH_SHORT).show();
+        sendCurrentUserInfo(myLocation);
 
     }
 
