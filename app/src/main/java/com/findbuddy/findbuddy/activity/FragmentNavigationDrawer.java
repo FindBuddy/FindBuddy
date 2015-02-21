@@ -25,8 +25,11 @@ import android.widget.ListView;
 import com.findbuddy.findbuddy.R;
 import com.findbuddy.findbuddy.fragments.ListViewFragment;
 import com.findbuddy.findbuddy.fragments.MapViewFragment;
+import com.findbuddy.findbuddy.models.User;
+import com.findbuddy.findbuddy.models.UserList;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class FragmentNavigationDrawer extends DrawerLayout {
     private ActionBarDrawerToggle drawerToggle;
@@ -34,6 +37,8 @@ public class FragmentNavigationDrawer extends DrawerLayout {
     private ArrayAdapter<String> drawerAdapter;
     private ArrayList<FragmentNavItem> drawerNavItems;
     private int drawerContainerRes;
+
+    private UserList<User> users;
 
     Fragment oldFragment = null;
 
@@ -99,6 +104,16 @@ public class FragmentNavigationDrawer extends DrawerLayout {
                 newFragment = ListViewFragment.newInstance();
             }
 
+            if(oldFragment == null || ! newFragment.isAdded()) {            // call setArguments only the first time the fragment is created
+                Bundle args = navItem.getFragmentArgs();
+                if (args != null) {
+                    args.putSerializable("users", users);
+                    newFragment.setArguments(args);
+                }
+            } else {
+                newFragment.getArguments().putSerializable("users", users);
+            }
+
             if (oldFragment == null) {
                 ft.add(drawerContainerRes, newFragment, navItem.getFragmentClass().getName());
             } else {
@@ -112,10 +127,7 @@ public class FragmentNavigationDrawer extends DrawerLayout {
 
             oldFragment = newFragment;
 
-            Bundle args = navItem.getFragmentArgs();
-            if (args != null) {
-                newFragment.setArguments(args);
-            }
+
 
             // Highlight the selected item, update the title, and close the drawer
             lvDrawer.setItemChecked(position, true);
@@ -157,7 +169,7 @@ public class FragmentNavigationDrawer extends DrawerLayout {
         private Bundle fragmentArgs;
 
         public FragmentNavItem(String title, Class<? extends Fragment> fragmentClass) {
-            this(title, fragmentClass, null);
+            this(title, fragmentClass, new Bundle());
         }
 
         public FragmentNavItem(String title, Class<? extends Fragment> fragmentClass, Bundle args) {
@@ -204,6 +216,10 @@ public class FragmentNavigationDrawer extends DrawerLayout {
 
     public boolean isDrawerOpen() {
         return isDrawerOpen(lvDrawer);
+    }
+
+    public void setUsers(UserList<User> users) {
+        this.users = users;
     }
 
 

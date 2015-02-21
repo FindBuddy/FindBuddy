@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+    <ImageView
+        android:id="@+id/ivProfile"
+        android:contentDescription="Friend image"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/ic_launcher" />
+    <TextView
+        android:textSize="18sp"
+        android:id="@+id/tvUserName"
+        android:padding="5sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </TextView>
+</LinearLayout>

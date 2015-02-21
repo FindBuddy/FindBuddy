@@ -188,7 +188,7 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
                 TextView tvUpdateTime = (TextView)v.findViewById(R.id.tvUpdateTime);
                 User user = markerUsers.get(args.getId());
                 tvUserName.setText("Name: " + user.getName());
-                tvUserId.setText("ID: " + user.getId());
+                tvUserId.setText("ID: " + user.getUserId());
                 tvUpdateTime.setText("Last Updated:" + user.getName());
 
                 mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
