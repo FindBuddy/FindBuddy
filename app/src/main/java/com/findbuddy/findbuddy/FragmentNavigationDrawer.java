@@ -78,7 +78,7 @@ public class FragmentNavigationDrawer extends DrawerLayout {
     /**
      * Swaps fragments in the main content view
      */
-    public void selectDrawerItem(int position, boolean init) {
+    public void selectDrawerItem(int position) {
         // Create a new fragment and specify the planet to show based on
         // position
         try {
@@ -90,20 +90,21 @@ public class FragmentNavigationDrawer extends DrawerLayout {
 
             if (navItem.getFragmentClass() == MapViewFragment.class) {
                 newFragment = MapViewFragment.newInstance();
+
             } else if (navItem.getFragmentClass() == ListViewFragment.class) {
                 newFragment = ListViewFragment.newInstance();
             }
 
-            if(init) {
-                ft.replace(drawerContainerRes, newFragment).commit();
+            if (oldFragment == null) {
+                ft.add(drawerContainerRes, newFragment, navItem.getFragmentClass().getName());
             } else {
-                // hide old and show new
-                if(oldFragment != null) {
-                    ft.hide(oldFragment);
+                if(! newFragment.isAdded()) {
+                    ft.add(drawerContainerRes, newFragment, navItem.getFragmentClass().getName());
                 }
+                ft.hide(oldFragment);
                 ft.show(newFragment);
-                ft.commit();
             }
+            ft.commit();
 
             oldFragment = newFragment;
 
@@ -142,7 +143,7 @@ public class FragmentNavigationDrawer extends DrawerLayout {
     private class FragmentDrawerItemListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectDrawerItem(position, false);
+            selectDrawerItem(position);
         }
     }
 

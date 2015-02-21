@@ -36,7 +36,7 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
 
     private static MapViewFragment mapViewFragment;
     private GoogleMap mMap;
-    private HashMap<String ,User> markerUsers = new HashMap<>();;
+    private HashMap<String ,User> markerUsers = new HashMap<>();
     private ArrayList<User> users = null;
 
     public  MapViewFragment() {
@@ -49,6 +49,8 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
         }
         return  mapViewFragment;
     }
+
+
 
 
     @Override
