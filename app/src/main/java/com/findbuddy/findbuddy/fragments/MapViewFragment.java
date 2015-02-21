@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.findbuddy.findbuddy.R;
 import com.findbuddy.findbuddy.models.User;
+import com.findbuddy.findbuddy.models.UserList;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -35,7 +36,7 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
     private static MapViewFragment mapViewFragment;
     private GoogleMap mMap;
     private HashMap<String ,User> markerUsers = new HashMap<>();
-    private ArrayList<User> users = null;
+    private UserList<User> users = null;
 
     public  MapViewFragment() {
         super();
@@ -48,20 +49,15 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
         return  mapViewFragment;
     }
 
-
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setUpMapIfNeeded();
-        //markerUsers = new HashMap<>();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
-        setUpMapIfNeeded();
+        //setUpMapIfNeeded();
 
         return v;
     }
@@ -69,13 +65,18 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
     @Override
     public void onResume() {
         super.onResume();
-        setUpMapIfNeeded();
+        //setUpMapIfNeeded();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        //this.users = (UserList) getArguments().getSerializable("users");
     }
 
     /**
@@ -93,7 +94,8 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
      * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
      * method in {@link #onResume()} to guarantee that it will be called.
      */
-    private void setUpMapIfNeeded() {
+    public void setUpMapIfNeeded(UserList users) {
+        this.users = users;
         if (mMap == null) {
             mMap = getMap();
         }
@@ -113,7 +115,7 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
         mMap.setMyLocationEnabled(true);
 
         setUpCustomInfoWidget();
-        users = User.getDummyValues();
+        //users = User.getDummyValues();
 
         Marker marker;
         for(int i = 0; i<users.size();i++)
@@ -121,7 +123,6 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
             MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(users.get(i).getLat(), users.get(i).getLon()));
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin));
             Bitmap bitmap;
-
             marker = mMap.addMarker(markerOptions);
             markerUsers.put(marker.getId(),users.get(i));
         }

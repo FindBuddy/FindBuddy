@@ -84,11 +84,11 @@ public class User extends ParseObject {
         this.updateTime = updateTime;
     }
 
-    public static ArrayList<User> getDummyValues()
+    public static UserList<User> getDummyValues()
     {
         double longs[] = {-121.82,-121.92,-122.02,-122.12,-122.22};
         double lats[] = {37.2,37.25,37.3,37.35,37.4};
-        ArrayList<User> users = new ArrayList<>();
+        UserList<User> users = new UserList<>();
         for(int i = 1; i <= 5; i++)
         {
             users.add(new User(String.valueOf(i),"user "+String.valueOf(i),lats[i-1],longs[i-1],500));

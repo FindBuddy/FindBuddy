@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * Created by abhidhar on 2/21/15.
  */
-public class UserList<U> extends ArrayList implements Serializable, List {
+public class UserList<User> extends ArrayList<User> implements Serializable, List<User> {
     private static final long serialVersionUID = 23425345L;
+
 }

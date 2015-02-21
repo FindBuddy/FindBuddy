@@ -4,6 +4,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -67,8 +68,6 @@ public class MainActivity extends ActionBarActivity implements OnFragmentInterac
 
 
         sendCurrentUserInfo();
-        dlDrawer.setUsers(usersList);
-
         //handler.postDelayed(runnable, 1000);
 
     }
@@ -142,6 +141,7 @@ public class MainActivity extends ActionBarActivity implements OnFragmentInterac
                 if (e == null) {
                     usersList.clear();
                     usersList.addAll(user);
+                    dlDrawer.setUsers(usersList);
                     //mAdapter.notifyDataSetChanged();
                     //lvChat.invalidate();
                 } else {

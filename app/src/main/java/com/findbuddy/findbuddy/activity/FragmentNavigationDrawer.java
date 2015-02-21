@@ -127,8 +127,6 @@ public class FragmentNavigationDrawer extends DrawerLayout {
 
             oldFragment = newFragment;
 
-
-
             // Highlight the selected item, update the title, and close the drawer
             lvDrawer.setItemChecked(position, true);
             setTitle(navItem.getTitle());
@@ -220,6 +218,8 @@ public class FragmentNavigationDrawer extends DrawerLayout {
 
     public void setUsers(UserList<User> users) {
         this.users = users;
+        MapViewFragment mapViewFragment = (MapViewFragment) getActivity().getSupportFragmentManager().findFragmentByTag(MapViewFragment.class.getName());
+        mapViewFragment.setUpMapIfNeeded(users);
     }
 
 
