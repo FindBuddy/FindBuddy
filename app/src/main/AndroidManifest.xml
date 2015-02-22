@@ -36,10 +36,6 @@
             android:label="@string/title_activity_login" >
         </activity>
         <activity
-            android:name=".activity.LoginActivity"
-            android:label="@string/title_activity_credential_check_activity1" >
-        </activity>
-        <activity
             android:name=".activity.LoginSignupActivity2"
             android:label="@string/title_activity_login_signup_activity2" >
         </activity>
