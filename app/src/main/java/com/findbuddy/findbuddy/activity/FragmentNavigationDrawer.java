@@ -25,8 +25,8 @@ import android.widget.ListView;
 import com.findbuddy.findbuddy.R;
 import com.findbuddy.findbuddy.fragments.ListViewFragment;
 import com.findbuddy.findbuddy.fragments.MapViewFragment;
-import com.findbuddy.findbuddy.models.User;
 import com.findbuddy.findbuddy.models.UserList;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public class FragmentNavigationDrawer extends DrawerLayout {
     private ArrayList<FragmentNavItem> drawerNavItems;
     private int drawerContainerRes;
 
-    private UserList<User> users;
+    private UserList<ParseUser> users;
 
     Fragment oldFragment = null;
 
@@ -216,7 +216,7 @@ public class FragmentNavigationDrawer extends DrawerLayout {
         return isDrawerOpen(lvDrawer);
     }
 
-    public void setUsers(UserList<User> users) {
+    public void setUsers(UserList<ParseUser> users) {
         this.users = users;
         MapViewFragment mapViewFragment = (MapViewFragment) getActivity().getSupportFragmentManager().findFragmentByTag(MapViewFragment.class.getName());
         mapViewFragment.setUpMapIfNeeded(users);

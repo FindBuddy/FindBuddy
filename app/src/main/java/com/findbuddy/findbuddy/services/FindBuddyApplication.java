@@ -16,5 +16,7 @@ public class FindBuddyApplication extends Application {
 
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, YOUR_APPLICATION_ID, YOUR_CLIENT_KEY);
+
+        //ParseObject.registerSubclass(User.class);
     }
 }

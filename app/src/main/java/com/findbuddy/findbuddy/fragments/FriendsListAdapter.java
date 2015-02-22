@@ -9,17 +9,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.findbuddy.findbuddy.R;
-import com.findbuddy.findbuddy.models.User;
+import com.parse.ParseUser;
 
 import java.util.List;
 
 /**
  * Created by abhidhar on 2/5/15.
  */
-public class FriendsListAdapter extends ArrayAdapter<User> {
+public class FriendsListAdapter extends ArrayAdapter<ParseUser> {
     private String mUserId;
 
-    public FriendsListAdapter(Context context, String userId, List<User> users) {
+    public FriendsListAdapter(Context context, String userId, List<ParseUser> users) {
         super(context, 0, users);
         this.mUserId = userId;
     }
@@ -27,7 +27,7 @@ public class FriendsListAdapter extends ArrayAdapter<User> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        User user = getItem(position);
+        ParseUser user = getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.friend_item, parent, false);
@@ -35,7 +35,7 @@ public class FriendsListAdapter extends ArrayAdapter<User> {
         ImageView ivProfile = (ImageView) convertView.findViewById(R.id.ivProfile);
         TextView tvUserName = (TextView) convertView.findViewById(R.id.tvUserName);
 
-        tvUserName.setText(user.getName() + " (lat: " + user.getLat() + ", lon: " + user.getLon() + ")");
+        tvUserName.setText(ParseUser.getCurrentUser().getUsername() + " (lat: " + ParseUser.getCurrentUser().get("lat") + ", lon: " + ParseUser.getCurrentUser().get("lon") + ")");
 
         return convertView;
 
