@@ -172,8 +172,9 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
 
             // get my location
             Location myLocation = mMap.getMyLocation();
+
             // call the listener to send my location up to the activity
-            listener.sendCurrentLocationToParse(myLocation);
+            listener.sendCurrentLocationToParse(location);
         }
     }
     private void setUpCustomInfoWidget()
