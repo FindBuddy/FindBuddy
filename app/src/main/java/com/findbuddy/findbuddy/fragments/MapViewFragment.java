@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.findbuddy.findbuddy.R;
-import com.findbuddy.findbuddy.models.User;
 import com.findbuddy.findbuddy.models.UserList;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,6 +24,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.ParseUser;
 
 import java.util.HashMap;
 
@@ -37,8 +37,8 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
 
     private static MapViewFragment mapViewFragment;
     private GoogleMap mMap;
-    private HashMap<String ,User> markerUsers = new HashMap<>();
-    private UserList<User> users = null;
+    private HashMap<String ,ParseUser> markerUsers = new HashMap<>();
+    private UserList<ParseUser> users = null;
 
     public  MapViewFragment() {
         super();
@@ -96,7 +96,7 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
      * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
      * method in {@link #onResume()} to guarantee that it will be called.
      */
-    public void setUpMapIfNeeded(UserList users) {
+    public void setUpMapIfNeeded(UserList<ParseUser> users) {
         this.users = users;
         if (mMap == null) {
             mMap = getMap();
@@ -122,7 +122,10 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
         Marker marker;
         for(int i = 0; i<users.size();i++)
         {
-            MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(users.get(i).getLat(), users.get(i).getLon()));
+            // TODO remove this hack
+            double lat = Double.parseDouble(users.get(i).get("lat").toString());
+            double lon = Double.parseDouble(users.get(i).get("lon").toString());
+            MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(lat, lon));
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin));
             Bitmap bitmap;
             marker = mMap.addMarker(markerOptions);
@@ -148,15 +151,17 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
 
             for(int i =0; i< users.size();i++)
             {
-                User user = users.get(i);
-                if(minLat > user.getLat())
-                    minLat = user.getLat();
-                if(minLon > user.getLon())
-                    minLon = user.getLon();
-                if(maxLat < user.getLat())
-                    maxLat = user.getLat();
-                if(maxLon < user.getLon())
-                    maxLon = user.getLon();
+                ParseUser user = users.get(i);
+                double lat = Double.parseDouble(users.get(i).get("lat").toString());
+                double lon = Double.parseDouble(users.get(i).get("lon").toString());
+                if(minLat > lat)
+                    minLat = lat;
+                if(minLon > lon)
+                    minLon = lon;
+                if(maxLat < lat)
+                    maxLat = lat;
+                if(maxLon < lon)
+                    maxLon = lon;
             }
             if(minLat > location.getLatitude())
                 minLat = location.getLatitude();
@@ -195,10 +200,10 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
                 TextView tvUserName = (TextView) v.findViewById(R.id.tvUserName);
                 TextView tvUserId = (TextView)v.findViewById(R.id.tvUserId);
                 TextView tvUpdateTime = (TextView)v.findViewById(R.id.tvUpdateTime);
-                User user = markerUsers.get(args.getId());
-                tvUserName.setText("Name: " + user.getName());
-                tvUserId.setText("ID: " + user.getUserId());
-                tvUpdateTime.setText("Last Updated:" + user.getName());
+                ParseUser user = markerUsers.get(args.getId());
+                tvUserName.setText("Name: " + user.getUsername());
+                tvUserId.setText("ID: " + user.getUsername());
+                tvUpdateTime.setText("Last Updated:" + user.getUpdatedAt());
 
                 mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     public void onInfoWindowClick(Marker marker) {

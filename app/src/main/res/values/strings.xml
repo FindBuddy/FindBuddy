@@ -7,5 +7,16 @@
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_credential_check_activity1">CredentialCheckActivity1</string>
+    <string name="title_activity_login_signup_activity2">LoginSignupActivity2</string>
+
+
+    <string name="Username">Username</string>
+    <string name="Password">Password</string>
+    <string name="LoginBtn">Login</string>
+    <string name="SignupBtn">Sign Up</string>
+    <string name="LogoutBtn">Log Out</string>
+    <string name="Welcome">Welcome!</string>
 
 </resources>

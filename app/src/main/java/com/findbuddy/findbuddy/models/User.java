@@ -2,6 +2,7 @@ package com.findbuddy.findbuddy.models;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -9,8 +10,11 @@ import java.util.Random;
 /**
  * Created by seshasa on 2/20/15.
  */
-@ParseClassName("Friend")
-public class User extends ParseObject {
+
+public class User {
+
+    protected ParseUser parseUser;
+
     private String userId;
     private String name;
     private double lat;
@@ -36,44 +40,61 @@ public class User extends ParseObject {
 
     }
 
+    public void setAttributes() {
+
+        setUserId(userId);
+        setName(name);
+        setLat(lat);
+        setLon(lon);
+        setAccuracy(accuracy);
+    }
+
+    public ParseUser getParseUser() {
+        return parseUser;
+    }
+
+    public void setParseUser(ParseUser parseUser) {
+        this.parseUser = parseUser;
+    }
+
     public String getUserId() {
-        return getString("userId");
+        return parseUser.getString("userId");
     }
 
     public void setUserId(String userId) {
-        put("userId", userId);
+        parseUser.put("userId", userId);
     }
 
     public String getName() {
-        return getString("name");
+        return parseUser.getString("name");
     }
 
     public void setName(String name) {
-        put("name", name);
+        parseUser.put("name", name);
     }
 
     public double getLat() {
-        return getDouble("lat");
+        return parseUser.getDouble("lat");
     }
 
     public void setLat(double lat) {
-        put("lat", lat);
+        parseUser.put("lat", lat);
     }
 
     public double getLon() {
-        return getDouble("lon");
+        return parseUser.getDouble("lon");
     }
 
     public void setLon(double lon) {
-        put("lon", lon);
+        parseUser.put("lon", lon);
     }
 
     public int getAccuracy() {
-        return getInt("accuracy");
+        return parseUser.getInt("accuracy");
     }
 
     public void setAccuracy(float accuracy) {
-        put("accuracy", accuracy);
+        parseUser.put("accuracy", accuracy);
     }
 
     public String getUpdateTime() {
