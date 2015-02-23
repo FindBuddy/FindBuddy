@@ -35,7 +35,7 @@ public class FriendsListAdapter extends ArrayAdapter<ParseUser> {
         ImageView ivProfile = (ImageView) convertView.findViewById(R.id.ivProfile);
         TextView tvUserName = (TextView) convertView.findViewById(R.id.tvUserName);
 
-        tvUserName.setText(ParseUser.getCurrentUser().getUsername() + " (lat: " + ParseUser.getCurrentUser().get("lat") + ", lon: " + ParseUser.getCurrentUser().get("lon") + ")");
+        tvUserName.setText(user.getUsername() + " (lat: " + user.get("lat") + ", lon: " + user.get("lon") + ")");
 
         return convertView;
 
