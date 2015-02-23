@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.findbuddy.findbuddy.R;
 import com.findbuddy.findbuddy.models.UserList;
+import com.findbuddy.findbuddy.services.FindBuddyUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -253,17 +254,17 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
             @Override
             public View getInfoWindow(Marker args) {
                 ParseUser user = markerUsers.get(args.getId());
-                if(user == null)
+                if (user == null)
                     return null;
                 // Getting view from the layout file info_window_layout
                 View v = getActivity().getLayoutInflater().inflate(R.layout.info_widget_layout, null);
                 TextView tvUserName = (TextView) v.findViewById(R.id.tvUserName);
-                TextView tvUserId = (TextView)v.findViewById(R.id.tvUserId);
-                TextView tvUpdateTime = (TextView)v.findViewById(R.id.tvUpdateTime);
+                TextView tvUserId = (TextView) v.findViewById(R.id.tvUserId);
+                TextView tvUpdateTime = (TextView) v.findViewById(R.id.tvUpdateTime);
 
                 tvUserName.setText("Name: " + user.getUsername());
                 tvUserId.setText("ID: " + user.getUsername());
-                tvUpdateTime.setText("Last Updated:" + user.getUpdatedAt());
+                tvUpdateTime.setText("Last Updated " + FindBuddyUtils.getRelativeTimeAgo(user.getUpdatedAt()));
 
                 mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     public void onInfoWindowClick(Marker marker) {
