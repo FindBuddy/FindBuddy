@@ -29,11 +29,13 @@ import com.parse.ParseUser;
 
 import java.util.HashMap;
 
+import static java.lang.Math.abs;
+
 /**
  * Created by abhidhar on 2/19/15.
  */
 public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragment {
-
+    private static final float MIN_LOCATION_CHANGE_TO_UPDATE = 100;
     private OnFragmentInteractionListener listener;
 
     private static MapViewFragment mapViewFragment;
@@ -151,6 +153,7 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
     {
         if (currentLocation == null)
         {
+            prevLocation = currentLocation;
             currentLocation = location;
             currentLocationSource = locationSource;
             listener.sendCurrentLocationToParse(location);
@@ -158,15 +161,25 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
         }
         if(currentLocationSource == "last_known" && (locationSource == LocationManager.GPS_PROVIDER || locationSource == LocationManager.NETWORK_PROVIDER))
         {
+            prevLocation = currentLocation;
             currentLocation = location;
             currentLocationSource = locationSource;
-            listener.sendCurrentLocationToParse(location);
+            Double latDiff = abs((double) (currentLocation.getLatitude() - prevLocation.getLatitude()));
+            Double lonDiff = abs((double) (currentLocation.getLongitude() - prevLocation.getLongitude()));
+            if(currentLocation.distanceTo(prevLocation) > MIN_LOCATION_CHANGE_TO_UPDATE) {
+                listener.sendCurrentLocationToParse(location);
+            }
+
+
         }
         else if(locationSource != "last_known")
         {
+            prevLocation = currentLocation;
             currentLocation = location;
             currentLocationSource = locationSource;
-            listener.sendCurrentLocationToParse(location);
+            if(currentLocation.distanceTo(prevLocation) > MIN_LOCATION_CHANGE_TO_UPDATE) {
+                listener.sendCurrentLocationToParse(location);
+            }
         }
     }
 
