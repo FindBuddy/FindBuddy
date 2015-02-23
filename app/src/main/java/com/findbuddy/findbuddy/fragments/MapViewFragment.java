@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,8 +17,6 @@ import android.widget.Toast;
 
 import com.findbuddy.findbuddy.R;
 import com.findbuddy.findbuddy.models.UserList;
-//import com.google.android.gms.location.LocationListener;
-import android.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -44,8 +43,10 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
     LocationManager locationManager;
     LocationListener networkLocationListener;
     LocationListener gpslocationListener;
-    Location currentLocation = null;
+    private Location prevLocation = null;
+    private Location currentLocation = null;
     String currentLocationSource;
+    boolean mapLoaded = false;
 
     public  MapViewFragment() {
         super();
@@ -114,7 +115,10 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
             setUpMap();
         }
     }
+    public void onCameraChangeListener(CameraPosition cameraPosition)
+    {
 
+    }
     /**
      * This is where we can add markers or lines, add listeners or move the camera. In this case, we
      * just add a marker near Africa.
@@ -124,30 +128,60 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
     private void setUpMap() {
         //mMap.addMarker(new MarkerOptions().position(new LatLng(37.2, -121.4)).title("Marker"));
         mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
-        setUpCustomInfoWidget();
-        //users = User.getDummyValues();
-
-        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
-            @Override
-            public void onMapLoaded() {
-                setUpLocationsService();
+        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            public void onCameraChange(CameraPosition cameraPosition) {
+                onCameraChangeListener(cameraPosition);
             }
         });
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            public void onMapLoaded() {
+                if(!mapLoaded) {
+                    onMapLoadedListener();
+                    mapLoaded = true;
+                }
+            }
+        });
+
+        setUpCustomInfoWidget();
     }
-    private void setUpLocationsService()
+
+    public void updateCurrentLocation(Location location,String locationSource)
     {
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-
-        Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
-
-        if (location != null)
+        if (currentLocation == null)
         {
-            Double minLat = 90.0, minLon = 180.0, maxLat = -90.0,maxLon = -180.0;
+            currentLocation = location;
+            currentLocationSource = locationSource;
+            listener.sendCurrentLocationToParse(location);
+            return;
+        }
+        if(currentLocationSource == "last_known" && (locationSource == LocationManager.GPS_PROVIDER || locationSource == LocationManager.NETWORK_PROVIDER))
+        {
+            currentLocation = location;
+            currentLocationSource = locationSource;
+            listener.sendCurrentLocationToParse(location);
+        }
+        else if(locationSource != "last_known")
+        {
+            currentLocation = location;
+            currentLocationSource = locationSource;
+            listener.sendCurrentLocationToParse(location);
+        }
+    }
 
-            for(int i =0; i< users.size();i++)
-            {
+    private void onMapLoadedListener()
+    {
+        Criteria criteria = new Criteria();
+        Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
+        updateCurrentLocation(location,"last_known");
+        setDefaultZoomLevel();
+    }
+    public void setDefaultZoomLevel() {
+        if (currentLocation != null) {
+            if (users != null && users.size() > 0) {
+                Double minLat = 90.0, minLon = 180.0, maxLat = -90.0, maxLon = -180.0;
+                for (int i = 0; i < users.size(); i++) {
                 ParseUser user = users.get(i);
                 double lat = Double.parseDouble(users.get(i).get("lat").toString());
                 double lon = Double.parseDouble(users.get(i).get("lon").toString());
@@ -160,23 +194,19 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
                 if(maxLon < lon)
                     maxLon = lon;
             }
-            if(minLat > location.getLatitude())
-                minLat = location.getLatitude();
-            if(minLon > location.getLongitude())
-                minLon = location.getLongitude();
-            if(maxLat < location.getLatitude())
-                maxLat = location.getLatitude();
-            if(maxLon < location.getLongitude())
-                maxLon = location.getLongitude();
+            if(minLat > currentLocation.getLatitude())
+                minLat = currentLocation.getLatitude();
+            if(minLon > currentLocation.getLongitude())
+                minLon = currentLocation.getLongitude();
+            if(maxLat < currentLocation.getLatitude())
+                maxLat = currentLocation.getLatitude();
+            if(maxLon < currentLocation.getLongitude())
+                maxLon = currentLocation.getLongitude();
             LatLngBounds bounds= new LatLngBounds( new LatLng(minLat,minLon),new LatLng(maxLat,maxLon));
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
-            //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 5));
-
-            // get my location
-            Location myLocation = mMap.getMyLocation();
-
-            // call the listener to send my location up to the activity
-            listener.sendCurrentLocationToParse(location);
+            }else {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()), 5));
+            }
         }
     }
     public void updateUsersOnMap(UserList<ParseUser> users)
@@ -206,13 +236,15 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
             // Defines the contents of the InfoWindow
             @Override
             public View getInfoWindow(Marker args) {
-
+                ParseUser user = markerUsers.get(args.getId());
+                if(user == null)
+                    return null;
                 // Getting view from the layout file info_window_layout
                 View v = getActivity().getLayoutInflater().inflate(R.layout.info_widget_layout, null);
                 TextView tvUserName = (TextView) v.findViewById(R.id.tvUserName);
                 TextView tvUserId = (TextView)v.findViewById(R.id.tvUserId);
                 TextView tvUpdateTime = (TextView)v.findViewById(R.id.tvUpdateTime);
-                ParseUser user = markerUsers.get(args.getId());
+
                 tvUserName.setText("Name: " + user.getUsername());
                 tvUserId.setText("ID: " + user.getUsername());
                 tvUpdateTime.setText("Last Updated:" + user.getUpdatedAt());
@@ -271,6 +303,7 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
         networkLocationListener= new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                updateCurrentLocation(location,LocationManager.NETWORK_PROVIDER);
                 Toast.makeText(getActivity(), "NetWorkLocation Change Received", Toast.LENGTH_SHORT).show();
                 //mMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("Network"));
             }
@@ -295,6 +328,7 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
             @Override
             public void onLocationChanged(Location location) {
                 Toast.makeText(getActivity(), "GPSLocation Change Received", Toast.LENGTH_SHORT).show();
+                updateCurrentLocation(location,LocationManager.GPS_PROVIDER);
                 //mMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("GPS").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 
             }
