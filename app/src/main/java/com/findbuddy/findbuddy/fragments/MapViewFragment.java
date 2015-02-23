@@ -41,6 +41,7 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
     private static MapViewFragment mapViewFragment;
     private GoogleMap mMap;
     private HashMap<String ,ParseUser> markerUsers = new HashMap<>();
+    ParseUser myUser;
     private UserList<ParseUser> users = null;
     LocationManager locationManager;
     LocationListener networkLocationListener;
@@ -229,6 +230,8 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
         mMap.clear();
         for(int i = 0; i< this.users.size();i++)
         {
+            if(users.get(i) == myUser)
+                continue;
             LatLng latLng = new LatLng(Double.parseDouble(users.get(i).get("lat").toString()),Double.parseDouble(users.get(i).get("lon").toString()));
             MarkerOptions markerOptions = new MarkerOptions().position(latLng);
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin));
@@ -362,5 +365,9 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
             }
         };
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,30000,100,gpslocationListener,null);
+    }
+
+    public void setMyUser(ParseUser user) {
+        myUser = user;
     }
 }

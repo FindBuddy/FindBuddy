@@ -28,7 +28,9 @@ import java.util.List;
 public class MainActivity extends ActionBarActivity implements OnFragmentInteractionListener {
 
     private FragmentNavigationDrawer dlDrawer;
-    private static String sUserId;
+    private ParseUser myUser;
+    private boolean currentUserPosted = false;
+    //private static String sUserId;
 
     private Handler handler = new Handler();
     private UserList<ParseUser> usersList;
@@ -38,7 +40,8 @@ public class MainActivity extends ActionBarActivity implements OnFragmentInterac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sUserId = ParseUser.getCurrentUser().getUsername();
+//        sUserId = ParseUser.getCurrentUser().getUsername();
+        myUser = ParseUser.getCurrentUser();
 
 
         dlDrawer = (FragmentNavigationDrawer) findViewById(R.id.drawer_layout);
@@ -136,6 +139,9 @@ public class MainActivity extends ActionBarActivity implements OnFragmentInterac
     }
 
     private void receiveUsersList() {
+        if(!currentUserPosted) {
+            dlDrawer.setMyUser(myUser);
+        }
         // Construct query to execute
         //ParseQuery<ParseUser> query = ParseQuery.getQuery(ParseUser.class);
         ParseQuery<ParseUser> query = ParseUser.getQuery();
@@ -147,6 +153,7 @@ public class MainActivity extends ActionBarActivity implements OnFragmentInterac
                     usersList.clear();
                     usersList.addAll(user);
                     dlDrawer.setUsers(usersList);
+
                 } else {
                     Log.d("message", "Error: " + e.getMessage());
                 }
