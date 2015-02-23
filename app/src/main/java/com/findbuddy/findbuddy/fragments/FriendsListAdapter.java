@@ -51,7 +51,7 @@ public class FriendsListAdapter extends ArrayAdapter<ParseUser> {
 
         String accuracy = user.get("accuracy").toString();
         Date lastUpdatedAt = user.getUpdatedAt();
-        String dateStr = FindBuddyUtils.getUserReadableDateStr(lastUpdatedAt);
+        String dateStr = FindBuddyUtils.getRelativeTimeAgo(lastUpdatedAt);
 
 
         tvUserName.setText(user.getUsername());

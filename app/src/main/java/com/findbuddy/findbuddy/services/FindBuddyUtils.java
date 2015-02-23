@@ -2,12 +2,13 @@ package com.findbuddy.findbuddy.services;
 
 import android.location.Address;
 import android.location.Geocoder;
+import android.text.format.DateUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -20,7 +21,19 @@ public class FindBuddyUtils {
     public static String getUserReadableDateStr(Date lastUpdatedAt) {
         df.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
         String dateStr = df.format(lastUpdatedAt);
-        return  dateStr;
+        return dateStr;
+    }
+
+    public static String getRelativeTimeAgo(Date lastUpdatedAt) {
+        df.setLenient(true);
+
+        String relativeDate = "";
+        long dateMillis = lastUpdatedAt.getTime();
+        relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
+                System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE).toString();
+
+
+        return relativeDate;
     }
 
     public static String getAddress(Geocoder geocoder, Object latitude1, Object longitude1) {
