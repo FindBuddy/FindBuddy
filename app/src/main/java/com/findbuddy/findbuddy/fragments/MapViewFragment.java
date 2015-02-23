@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.findbuddy.findbuddy.R;
 import com.findbuddy.findbuddy.models.UserList;
+//import com.google.android.gms.location.LocationListener;
+import android.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -39,6 +41,11 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
     private GoogleMap mMap;
     private HashMap<String ,ParseUser> markerUsers = new HashMap<>();
     private UserList<ParseUser> users = null;
+    LocationManager locationManager;
+    LocationListener networkLocationListener;
+    LocationListener gpslocationListener;
+    Location currentLocation = null;
+    String currentLocationSource;
 
     public  MapViewFragment() {
         super();
@@ -54,12 +61,14 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        setUpLocationsListeners();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
-        //setUpMapIfNeeded();
+        setUpMapIfNeeded();
 
         return v;
     }
@@ -67,7 +76,8 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
     @Override
     public void onResume() {
         super.onResume();
-        //setUpMapIfNeeded();
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        setUpMapIfNeeded();
     }
 
     @Override
@@ -96,8 +106,7 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
      * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
      * method in {@link #onResume()} to guarantee that it will be called.
      */
-    public void setUpMapIfNeeded(UserList<ParseUser> users) {
-        this.users = users;
+    public void setUpMapIfNeeded() {
         if (mMap == null) {
             mMap = getMap();
         }
@@ -119,18 +128,6 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
         setUpCustomInfoWidget();
         //users = User.getDummyValues();
 
-        Marker marker;
-        for(int i = 0; i<users.size();i++)
-        {
-            // TODO remove this hack
-            double lat = Double.parseDouble(users.get(i).get("lat").toString());
-            double lon = Double.parseDouble(users.get(i).get("lon").toString());
-            MarkerOptions markerOptions = new MarkerOptions().position(new LatLng(lat, lon));
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin));
-            Bitmap bitmap;
-            marker = mMap.addMarker(markerOptions);
-            markerUsers.put(marker.getId(),users.get(i));
-        }
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
@@ -181,6 +178,21 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
             // call the listener to send my location up to the activity
             listener.sendCurrentLocationToParse(location);
         }
+    }
+    public void updateUsersOnMap(UserList<ParseUser> users)
+    {
+        Marker marker;
+        this.users = users;
+        mMap.clear();
+        for(int i = 0; i< this.users.size();i++)
+        {
+            LatLng latLng = new LatLng(Double.parseDouble(users.get(i).get("lat").toString()),Double.parseDouble(users.get(i).get("lon").toString()));
+            MarkerOptions markerOptions = new MarkerOptions().position(latLng);
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin));
+            marker = mMap.addMarker(markerOptions);
+            markerUsers.put(marker.getId(), this.users.get(i));
+        }
+
     }
     private void setUpCustomInfoWidget()
     {
@@ -253,5 +265,55 @@ public class MapViewFragment extends com.google.android.gms.maps.SupportMapFragm
             throw new ClassCastException(activity.toString()
                     + " must implement MyListFragment.OnItemSelectedListener");
         }
+    }
+    public void setUpLocationsListeners()
+    {
+        networkLocationListener= new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                Toast.makeText(getActivity(), "NetWorkLocation Change Received", Toast.LENGTH_SHORT).show();
+                //mMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("Network"));
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,60000,100,networkLocationListener,null);
+        gpslocationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                Toast.makeText(getActivity(), "GPSLocation Change Received", Toast.LENGTH_SHORT).show();
+                //mMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("GPS").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,30000,100,gpslocationListener,null);
     }
 }

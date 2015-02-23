@@ -219,7 +219,10 @@ public class FragmentNavigationDrawer extends DrawerLayout {
     public void setUsers(UserList<ParseUser> users) {
         this.users = users;
         MapViewFragment mapViewFragment = (MapViewFragment) getActivity().getSupportFragmentManager().findFragmentByTag(MapViewFragment.class.getName());
-        mapViewFragment.setUpMapIfNeeded(users);
+        if(mapViewFragment != null) {
+            mapViewFragment.setUpMapIfNeeded();
+            mapViewFragment.updateUsersOnMap(users);
+        }
     }
 
 

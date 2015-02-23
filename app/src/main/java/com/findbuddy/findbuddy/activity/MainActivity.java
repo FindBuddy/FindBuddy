@@ -57,15 +57,15 @@ public class MainActivity extends ActionBarActivity implements OnFragmentInterac
         //setup parse
         //ParseObject.registerSubclass(User.class);
 
-        receiveUsersList();
-        //handler.postDelayed(runnable, 1000);
+        //receiveUsersList();
+        handler.postDelayed(runnable, 1000);
     }
 
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
             receiveUsersList();
-            //handler.postDelayed(this, 100);
+            handler.postDelayed(this, 10000);
         }
     };
 
